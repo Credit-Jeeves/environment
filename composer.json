@@ -23,5 +23,5 @@
             "Hat": "src/"
         }
     },
-    "bin": ["bin/environment"]
+    "bin": ["environment"]
 }
