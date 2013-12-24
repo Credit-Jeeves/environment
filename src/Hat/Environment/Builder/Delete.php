@@ -9,6 +9,7 @@ class Delete extends Builder
     protected $defaults = array(
         'path' => null,
         'exclude' => null,
+        'self_remove' => false,
     );
 
     public function build()
@@ -40,7 +41,7 @@ class Delete extends Builder
         }
     }
 
-    protected function rm($path)
+    protected function rm($path, $first = true)
     {
         if (is_dir($path)) {
             $dirHandle = opendir($path);
@@ -51,14 +52,16 @@ class Delete extends Builder
         while ($file = readdir($dirHandle)) {
             if (!$this->isExcluded($file)) {
                 if (is_dir($path . '/' . $file)) {
-                    $this->rm($path . '/' . $file);
+                    $this->rm($path . '/' . $file, false);
                 } else {
                     unlink($path . '/' . $file);
                 }
             }
         }
         closedir($dirHandle);
-        @rmdir($path);
+        if ($first && $this->get('self_remove')) {
+            @rmdir($path);
+        }
         return true;
     }
 }
